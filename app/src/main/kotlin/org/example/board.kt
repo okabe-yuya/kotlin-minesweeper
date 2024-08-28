@@ -1,9 +1,17 @@
 package org.example
 
+import kotlin.math.max
+import kotlin.math.abs
+
 data class PositiveInt(val value: Int) {
     init {
         require(value >= 0) { "正の数を入力してください" }
     }
+}
+
+sealed interface Cell {
+    class Mine : Cell
+    class Empty(val neighbourMines: PositiveInt): Cell
 }
 
 data class Board(
@@ -11,7 +19,24 @@ data class Board(
     val height: PositiveInt,
     val mines: List<Coordinate>,
 ) {
-    data class Coordinate(val x: PositiveInt, val y: PositiveInt)
+    data class Coordinate(val x: PositiveInt, val y: PositiveInt) {
+        fun neighbour(other: Coordinate): Boolean {
+            return max(abs(x.value - other.x.value), abs(y.value - other.y.value)) <= 1
+        }
+    }
+
+    fun cell(coordinate: Coordinate): Cell {
+        return if (coordinate in mines) {
+            Cell.Mine()
+        } else {
+            Cell.Empty(countNeighbours(coordinate))
+        }
+    }
+
+    private fun countNeighbours(coordinate: Coordinate): PositiveInt {
+        val count = mines.count { it.neighbour(coordinate) }
+        return PositiveInt(count)
+    }
 
     companion object {
         fun create(
