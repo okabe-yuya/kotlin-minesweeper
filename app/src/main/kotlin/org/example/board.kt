@@ -20,6 +20,29 @@ data class Board(
     val mines: List<Coordinate>,
 ) {
     data class Coordinate(val x: PositiveInt, val y: PositiveInt) {
+        val listX = listOf(-1, 0, 1)
+        val listY = listOf(-1, 0, 1)
+        val neighbours: List<Coordinate> = 
+            listX.flatMap { x -> listY.map { y -> x to y } }.filterNot {
+                it == Pair(0, 0)
+            }.map {
+                (x, y) -> Coordinate(PositiveInt(x), PositiveInt(y))
+            }
+
+        operator fun plus(c: Coordinate): Coordinate {
+            return Coordinate(
+                x = PositiveInt(x.value + c.x.value),
+                y = PositiveInt(y.value + c.y.value),
+            )
+        }
+
+        fun neighbours(boardWidth: PositiveInt, boardHeight: PositiveInt): List<Coordinate> {
+            return neighbours.map { n -> this + n }.filter {
+                it.x.value < 0 || it.x.value >= boardWidth.value ||
+                it.y.value < 0 || it.y.value >= boardHeight.value
+            }
+        }
+
         fun neighbour(other: Coordinate): Boolean {
             return max(abs(x.value - other.x.value), abs(y.value - other.y.value)) <= 1
         }
