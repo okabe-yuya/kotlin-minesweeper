@@ -4,9 +4,9 @@ import kotlin.math.max
 import kotlin.math.abs
 
 data class PositiveInt(val value: Int) {
-    init {
-        require(value >= 0) { "正の数を入力してください" }
-    }
+    // init {
+    //     require(value >= 0) { "正の数を入力してください: $value が指定されました" }
+    // }
 }
 
 sealed interface Cell {
@@ -14,21 +14,22 @@ sealed interface Cell {
     class Empty(val neighbourMines: PositiveInt): Cell
 }
 
+val listX = listOf(-1, 0, 1)
+val listY = listOf(-1, 0, 1)
+val neighbours: List<Board.Coordinate> = listX.flatMap { x ->
+        listY.map { y -> x to y }
+    }.filterNot {
+        it == Pair(0, 0)
+    }.map {
+        (x, y) -> Board.Coordinate(PositiveInt(x), PositiveInt(y))
+    }
+
 data class Board(
     val width: PositiveInt,
     val height: PositiveInt,
     val mines: List<Coordinate>,
 ) {
     data class Coordinate(val x: PositiveInt, val y: PositiveInt) {
-        val listX = listOf(-1, 0, 1)
-        val listY = listOf(-1, 0, 1)
-        val neighbours: List<Coordinate> = 
-            listX.flatMap { x -> listY.map { y -> x to y } }.filterNot {
-                it == Pair(0, 0)
-            }.map {
-                (x, y) -> Coordinate(PositiveInt(x), PositiveInt(y))
-            }
-
         operator fun plus(c: Coordinate): Coordinate {
             return Coordinate(
                 x = PositiveInt(x.value + c.x.value),
@@ -67,12 +68,12 @@ data class Board(
             height: PositiveInt,
             minesCount: PositiveInt,
         ): Board {
+            println("fullBoard!")
             val fullBoard: List<Coordinate> = (0 until width.value).flatMap { w ->
                 (0 until height.value).map { h -> w to h }
             }.map {
                 (x, y) -> Coordinate(PositiveInt(x), PositiveInt(y))
             }
-
             return Board(
                 width = width,
                 height = height,
