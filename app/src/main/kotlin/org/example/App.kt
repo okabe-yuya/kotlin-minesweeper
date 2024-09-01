@@ -8,6 +8,13 @@ class MineSweeper(
     val height: Int,
     val minesCount: Int,
 ) {
+    data class InputPoint(val x: Int, val y: Int) {
+        init {
+            require(x >= 0) { "x must be require >= 0" }
+            require(y >= 0) { "y must be require >= 0" }
+        }
+    }
+
     fun play() {
         val board = Board.create(
             width = width,
@@ -19,9 +26,9 @@ class MineSweeper(
         render.render(System.out)
 
         var input = readAndSplit()
-        while (input != null) {
+        while (true) {
             val result = game.reveal(
-                Board.Coordinate(input.second, input.first)
+                Board.Coordinate(input.x, input.y)
             )
             render.render(System.out)
            
@@ -35,16 +42,17 @@ class MineSweeper(
         
     }
 
-    private fun readAndSplit(): Pair<Int, Int>? {
-        println("Type click coordinate as 'y, x' (0 based)> ")
+    private fun readAndSplit(): InputPoint {
+        println("Type click coordinate as 'y, x' (1 based)> ")
 
         val input = readln()
         val splited = input.split(",")
         if (splited.size >= 2) {
-            return splited[0].toInt() to splited[1].toInt()
+            return InputPoint(splited[1].toInt() - 1, splited[0].toInt() - 1) 
         }
 
-        return null
+        // 入力が不正な場合、再度、入力を促す
+        return readAndSplit()
     }
 }
 
