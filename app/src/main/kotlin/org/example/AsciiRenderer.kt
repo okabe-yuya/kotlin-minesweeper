@@ -11,10 +11,10 @@ class AsciiRenderer(val grid: Game) {
             (0 until width).forEach { x ->
                 val cell = grid.cell(Board.Coordinate(x, y))
                 val content = when (cell) {
-                    null -> "#"
+                    null -> "▪"
                     is Cell.Mine -> "*"
                     is Cell.Empty -> {
-                        if (cell.neighbourMines == 0) "_" else cell.neighbourMines
+                        if (cell.neighbourMines == 0) "▫" else cell.neighbourMines
                     }
                 }
                 output.print(content)

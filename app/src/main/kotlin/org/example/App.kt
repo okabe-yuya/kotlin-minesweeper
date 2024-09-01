@@ -52,7 +52,7 @@ fun main() {
     MineSweeper(
         width = 10,
         height = 10,
-        minesCount = 1,
+        minesCount = 5,
     ).play()
 }
 
