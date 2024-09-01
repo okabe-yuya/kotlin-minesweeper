@@ -9,16 +9,6 @@ sealed interface Cell {
     class Empty(val neighbourMines: Int): Cell
 }
 
-val listX = listOf(-1, 0, 1)
-val listY = listOf(-1, 0, 1)
-val neighbours: List<Board.Coordinate> = listX.flatMap { x ->
-        listY.map { y -> x to y }
-    }.filterNot {
-        it == Pair(0, 0)
-    }.map {
-        (x, y) -> Board.Coordinate(x, y)
-    }
-
 data class Board(
     val width: Int,
     val height: Int,
@@ -26,21 +16,30 @@ data class Board(
 ) {
     data class Coordinate(val x: Int, val y: Int) {
         operator fun plus(c: Coordinate): Coordinate {
-            return Coordinate(
-                x = x + c.x,
-                y = y + c.y,
-            )
+            return Coordinate(x + c.x, y + c.y)
         }
 
         fun neighbours(boardWidth: Int, boardHeight: Int): List<Coordinate> {
-            return neighbours.map { n -> this + n }.filter {
-                it.x < 0 || it.x >= boardWidth ||
-                it.y < 0 || it.y >= boardHeight
-            }
+            return NEIGHBOURS
+                    .map { n -> this + n }
+                    .filter { it.x in 0 until boardWidth && it.y in 0 until boardHeight }
         }
 
         fun neighbour(other: Coordinate): Boolean {
             return max(abs(x - other.x), abs(y - other.y)) <= 1
+        }
+
+        companion object {
+            private val NEIGHBOURS = defineNeighbours()
+
+            private fun defineNeighbours (): List<Coordinate> {
+                val deltas = listOf(-1, 0, 1)
+                return deltas.flatMap { dx ->
+                    deltas.mapNotNull { dy ->
+                        if (dx == 0 && dy == 0) null else Coordinate(dx, dy)
+                    }
+                }
+            }
         }
     }
 

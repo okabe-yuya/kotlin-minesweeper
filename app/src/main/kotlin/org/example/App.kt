@@ -50,9 +50,9 @@ class MineSweeper(
 
 fun main() {
     MineSweeper(
-        width = 3,
-        height = 3,
-        minesCount = 3,
+        width = 10,
+        height = 10,
+        minesCount = 1,
     ).play()
 }
 

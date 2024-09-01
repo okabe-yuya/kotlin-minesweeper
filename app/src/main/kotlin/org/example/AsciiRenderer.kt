@@ -14,7 +14,7 @@ class AsciiRenderer(val grid: Game) {
                     null -> "#"
                     is Cell.Mine -> "*"
                     is Cell.Empty -> {
-                        if (cell.neighbourMines == 0) "-" else cell.neighbourMines
+                        if (cell.neighbourMines == 0) "_" else cell.neighbourMines
                     }
                 }
                 output.print(content)

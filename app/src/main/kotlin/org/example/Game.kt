@@ -1,6 +1,5 @@
 package org.example
 
-val CELL_WIDTH_NO_ADJACENT_MINES = Cell.Empty(0)
 
 enum class GameCommand {
     Play, Win, Lose;
@@ -21,10 +20,12 @@ data class Game(val board: Board) {
         var index = cellIndex(coordinate)
         if (cells[index] != null) return GameCommand.Play
 
-        cells[index] = board.cell(coordinate).also { cell ->
-            println(cell)
-            if (cell is Cell.Mine) return GameCommand.Lose
-            if (cell == CELL_WIDTH_NO_ADJACENT_MINES) {
+        val cell = board.cell(coordinate)
+        cells[index] = cell
+
+        if (cell is Cell.Mine) return GameCommand.Lose
+        if (cell is Cell.Empty) {
+            if (cell.neighbourMines == 0) {
                 revealNeighbours(coordinate)
             }
         }
