@@ -3,11 +3,7 @@ package org.example
 import org.example.Board
 import org.example.AsciiRenderer
 
-class MineSweeper(
-    val width: Int,
-    val height: Int,
-    val minesCount: Int,
-) {
+class MineSweeper(val board: Board) {
     data class InputPoint(val x: Int, val y: Int) {
         init {
             require(x >= 0) { "x must be require >= 0" }
@@ -16,11 +12,6 @@ class MineSweeper(
     }
 
     fun play() {
-        val board = Board.create(
-            width = width,
-            height = height,
-            minesCount = minesCount,
-        )
         val game = Game(board)
         val render = AsciiRenderer(game)
         render.render(System.out)
@@ -43,7 +34,7 @@ class MineSweeper(
     }
 
     private fun readAndSplit(): InputPoint {
-        println("Type click coordinate as 'y, x' (1 based)> ")
+        println("🔽 Type click coordinate as 'y, x' (1 based)> ")
 
         val input = readln()
         val splited = input.split(",")
@@ -56,11 +47,44 @@ class MineSweeper(
     }
 }
 
+fun selectDifficulty(): Board {
+    println("🔽 Select difficulty as 'easy(e), normal(n), hard(h) (default: normal(n))")
+    val input = readln()
+    return when (input) {
+        "e", "easy" -> 
+            Board.create(
+                width = 5,
+                height = 5,
+                minesCount = 5,
+            )
+        "n", "normal" ->
+            Board.create(
+                width = 10,
+                height = 10,
+                minesCount = 10,
+            )
+        "h", "hard" ->
+            Board.create(
+                width = 25,
+                height = 25,
+                minesCount = 100,
+            )
+        else ->
+            Board.create(
+                width = 10,
+                height = 10,
+                minesCount = 10,
+            )
+    }
+}
+
 fun main() {
-    MineSweeper(
-        width = 10,
-        height = 10,
-        minesCount = 5,
-    ).play()
+    println("-:::::::::::::::::::::::::::::::::::::::::::-")
+    println("-:::::Welcome to terminal MineSweeper💣:::::-")
+    println("-:::::::::::::::::::::::::::::::::::::::::::-")
+    println("")
+
+    val board = selectDifficulty()
+    MineSweeper(board).play()
 }
 
