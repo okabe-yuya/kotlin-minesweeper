@@ -1,6 +1,6 @@
 package org.example
 
-val CELL_WIDTH_NO_ADJACENT_MINES = Cell.Empty(PositiveInt(0))
+val CELL_WIDTH_NO_ADJACENT_MINES = Cell.Empty(0)
 
 enum class GameCommand {
     Play, Win, Lose;
@@ -15,7 +15,7 @@ enum class GameCommand {
 }
 
 data class Game(val board: Board) {
-    var cells: MutableList<Cell?> = MutableList(board.height.value * board.width.value) { null }
+    var cells: MutableList<Cell?> = MutableList(board.height * board.width) { null }
 
     fun reveal(coordinate: Board.Coordinate): GameCommand {
         var index = cellIndex(coordinate)
@@ -49,7 +49,7 @@ data class Game(val board: Board) {
     }
 
     private fun cellIndex(coordinate: Board.Coordinate): Int {
-        return coordinate.y.value * board.width.value + coordinate.x.value
+        return coordinate.y * board.width + coordinate.x
     }
 
     private fun revealNeighbours(coordinate: Board.Coordinate) {

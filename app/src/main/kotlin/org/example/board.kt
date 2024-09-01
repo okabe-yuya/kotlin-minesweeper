@@ -3,15 +3,10 @@ package org.example
 import kotlin.math.max
 import kotlin.math.abs
 
-data class PositiveInt(val value: Int) {
-    // init {
-    //     require(value >= 0) { "正の数を入力してください: $value が指定されました" }
-    // }
-}
 
 sealed interface Cell {
     class Mine : Cell
-    class Empty(val neighbourMines: PositiveInt): Cell
+    class Empty(val neighbourMines: Int): Cell
 }
 
 val listX = listOf(-1, 0, 1)
@@ -21,31 +16,31 @@ val neighbours: List<Board.Coordinate> = listX.flatMap { x ->
     }.filterNot {
         it == Pair(0, 0)
     }.map {
-        (x, y) -> Board.Coordinate(PositiveInt(x), PositiveInt(y))
+        (x, y) -> Board.Coordinate(x, y)
     }
 
 data class Board(
-    val width: PositiveInt,
-    val height: PositiveInt,
+    val width: Int,
+    val height: Int,
     val mines: List<Coordinate>,
 ) {
-    data class Coordinate(val x: PositiveInt, val y: PositiveInt) {
+    data class Coordinate(val x: Int, val y: Int) {
         operator fun plus(c: Coordinate): Coordinate {
             return Coordinate(
-                x = PositiveInt(x.value + c.x.value),
-                y = PositiveInt(y.value + c.y.value),
+                x = x + c.x,
+                y = y + c.y,
             )
         }
 
-        fun neighbours(boardWidth: PositiveInt, boardHeight: PositiveInt): List<Coordinate> {
+        fun neighbours(boardWidth: Int, boardHeight: Int): List<Coordinate> {
             return neighbours.map { n -> this + n }.filter {
-                it.x.value < 0 || it.x.value >= boardWidth.value ||
-                it.y.value < 0 || it.y.value >= boardHeight.value
+                it.x < 0 || it.x >= boardWidth ||
+                it.y < 0 || it.y >= boardHeight
             }
         }
 
         fun neighbour(other: Coordinate): Boolean {
-            return max(abs(x.value - other.x.value), abs(y.value - other.y.value)) <= 1
+            return max(abs(x - other.x), abs(y - other.y)) <= 1
         }
     }
 
@@ -57,27 +52,25 @@ data class Board(
         }
     }
 
-    private fun countNeighbours(coordinate: Coordinate): PositiveInt {
-        val count = mines.count { it.neighbour(coordinate) }
-        return PositiveInt(count)
+    private fun countNeighbours(coordinate: Coordinate): Int {
+        return mines.count { it.neighbour(coordinate) }
     }
 
     companion object {
         fun create(
-            width: PositiveInt,
-            height: PositiveInt,
-            minesCount: PositiveInt,
+            width: Int,
+            height: Int,
+            minesCount: Int,
         ): Board {
-            println("fullBoard!")
-            val fullBoard: List<Coordinate> = (0 until width.value).flatMap { w ->
-                (0 until height.value).map { h -> w to h }
+            val fullBoard: List<Coordinate> = (0 until width).flatMap { w ->
+                (0 until height).map { h -> w to h }
             }.map {
-                (x, y) -> Coordinate(PositiveInt(x), PositiveInt(y))
+                (x, y) -> Coordinate(x, y)
             }
             return Board(
                 width = width,
                 height = height,
-                mines = fullBoard.shuffled().take(minesCount.value),
+                mines = fullBoard.shuffled().take(minesCount),
             )
         }
     }

@@ -1,7 +1,6 @@
 package org.example
 
 import org.example.Board
-import org.example.PositiveInt
 import org.example.AsciiRenderer
 
 class MineSweeper(
@@ -11,9 +10,9 @@ class MineSweeper(
 ) {
     fun play() {
         val board = Board.create(
-            width = PositiveInt(width),
-            height = PositiveInt(height),
-            minesCount = PositiveInt(minesCount),
+            width = width,
+            height = height,
+            minesCount = minesCount,
         )
         val game = Game(board)
         val render = AsciiRenderer(game)
@@ -22,10 +21,7 @@ class MineSweeper(
         var input = readAndSplit()
         while (input != null) {
             val result = game.reveal(
-                Board.Coordinate(
-                    x = PositiveInt(input.second),
-                    y = PositiveInt(input.first),
-                )
+                Board.Coordinate(input.second, input.first)
             )
             render.render(System.out)
            
