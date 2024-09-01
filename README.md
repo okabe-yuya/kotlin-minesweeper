@@ -1,4 +1,4 @@
-CUI-MineSweeper
+💣 CUI-MineSweeper
 ===
 
 ## About
@@ -7,6 +7,7 @@ CUI-MineSweeper
 
 CUI上で実行されるシンプルなMineSweeperである。  
 
+https://github.com/user-attachments/assets/ff44cfac-2ff1-4697-8a54-49b595214106
 
 ## Usage
 
